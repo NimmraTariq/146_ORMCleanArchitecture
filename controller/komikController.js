@@ -44,7 +44,7 @@ async function updateKomik(req, res) {
         await komik.update({ judul, description, aurthor });
         res.status(200).json(komik);
     } catch (error) {
-        console.error("Error updating komik:", err.message);
+        console.error("Error updating komik:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 }
