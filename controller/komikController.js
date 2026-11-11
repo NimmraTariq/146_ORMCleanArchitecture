@@ -11,9 +11,8 @@ async function getAllKomik(req, res) {
 }
 
 async function getKomikById(req, res) {
-    const { id } = req.params;
     try {
-        const komik = await db.Komik.findByPk(id);
+        const komik = await db.Komik.findByPk(req.params.id);
         if (!komik) {
             return res.status(404).json({ error: "Komik not found" });
         }
@@ -28,45 +27,38 @@ async function createKomik(req, res) {
     const { judul, description, aurthor } = req.body;
     try {
         const newKomik = await db.Komik.create({ judul, description, aurthor });
-        try {
-            const newKomik = await db.Komik.create({ judul, description, aurthor });
-            res.status(201).json(newKomik);
-        } catch (error) {
-            console.error("Error creating komik:", error.MESSAGE);
-            res.status(500).json({ error: "Internal server error" });
-        }
-    } 
-
-    async function updateKomik(req, res) {
-        const { id } = req.params;
-        const { judul, description, aurthor } = req.body;
-        try {
-            const komik = await db.Komik.findByPk(id);
-            if (!komik) {
-                return res.status(404).json({ error: "Komik not found" });
-            }
-            komik.judul = judul;
-            komik.description = description;
-            komik.aurthor = aurthor;
-            await komik.save();
-            res.status(200).json(komik);
-        } catch (error) {
-            console.error("Error updating komik:", err.message);
-            res.status(500).json({ error: "Internal server error" });
-        }
+        res.status(201).json(newKomik);
+    } catch (error) {
+        console.error("Error creating komik:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
+}
+
+async function updateKomik(req, res) {
+    const { judul, description, aurthor } = req.body;
+    try {
+        const komik = await db.Komik.findByPk(req.params.id);
+        if (!komik) {
+            return res.status(404).json({ error: "Komik not found" });
+        }
+        await komik.update({ judul, description, aurthor });
+        res.status(200).json(komik);
+    } catch (error) {
+        console.error("Error updating komik:", err.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
 
 async function deleteKomik(req, res) {
-    const { id } = req.params;
     try {
-        const komik = await db.Komik.findByPk(id);
+        const komik = await db.Komik.findByPk(req.params.id);
         if (!komik) {
             return res.status(404).json({ error: "Komik not found" });
         }
         await komik.destroy();
         res.status(200).json({ message: "Komik deleted successfully" });
     } catch (error) {
-        console.error("Error deleting komik:", error.message);
+        console.error("Error deleting komik:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 }
@@ -78,6 +70,3 @@ module.exports = {
     updateKomik,
     deleteKomik
 };
-
-
-
