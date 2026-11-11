@@ -1,20 +1,11 @@
-const db = require('../models');
+const db = require("../models");
 
 async function connectDatabase() {
-    try {
-        await db.sequelize.authenticate();
-        console.log('Database connection has been established successfully.');
-    
-        await db.sequelize.sync([alter: true]);
-        console.log('Database synchronized successfully.');
+    await db.sequelize.authenticate();
+    console.log("Database connected successfully.");
 
-                } catch (error) {
-            console.error("Unable to connect to the database:", error);
-            process.exit(1);
-        }
+    await db.sequelize.sync();
+    console.log("Database synchronized successfully.");
 }
 
 module.exports = connectDatabase;
-
-
-
